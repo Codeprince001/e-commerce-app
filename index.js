@@ -51,9 +51,6 @@ app.get('/signout', (req, res) => {
   req.session = null;
   res.send("you are logged out");
 
-  setTimeout(() => {
-    res.redirect('/signup');
-  }, 1000);
 });
 
 app.get('/signin', (req, res) => {
@@ -78,7 +75,10 @@ app.post('/signin', async (req, res) => {
     return res.send('Email not found');
   }
 
-  if (user.password != password) {
+  const validPassword = await usersRepo.comparePassword(
+    user.password, password
+  );
+  if (!validPassword) {
     return res.send("Invalid Passowrd");
   }
 
