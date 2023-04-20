@@ -27,6 +27,8 @@ class UsersRepository {
     records.push(attribute);
 
     this.writeAll(records);
+
+    return attribute;
   }
   // write user info in file.json
   async writeAll(records) {
@@ -78,11 +80,5 @@ class UsersRepository {
   }
 }
 
-const test = async () => {
-  const repo = new UsersRepository('users.json');
-
-  const user = await repo.getOneBy({ email: "testing@test.com", id: "70f08aee" });
-  console.log(user);
-};
-
-test();
+// export userRpository class
+module.exports = new UsersRepository('users.json');
