@@ -35,7 +35,15 @@ class UsersRepository {
 
     this.writeAll(records);
 
-    return attrs;
+    return record;
+  }
+
+  async comparePassword(saved, supplied) {
+    // saved -> password saved in database: "hashed.salt"
+    // supplied -> password given to us by a user trying to sign
+    const [hashed, salt] = saved.split('.');
+    const hashedSupplied = await scrypt(supplied, salt, 64);
+    return hashed === hashedSupplied;
   }
   // write user info in file.json
   async writeAll(records) {
