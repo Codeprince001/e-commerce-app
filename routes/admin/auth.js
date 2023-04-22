@@ -12,22 +12,29 @@ router.get('/signup', (req, res) => {
 
 
 router.post('/signup', [
-  check('email').trim().normalizeEmail().isEmail(),
+  check('email')
+    .trim()
+    .normalizeEmail()
+    .isEmail()
+    .custom(async email => {
+      const user = await usersRepo.getOneBy({ email });
+      if (user) {
+        throw new Error("E-mail already in use");
+      }
+    }),
   check('password').trim().isLength({ min: 4, max: 20 }),
-  check('passwordConfirmation').trim().isLength({ min: 4, max: 20 })
+  check('passwordConfirmation').trim().isLength({ min: 4, max: 20 }).custom(
+    ((passwordConfirmation, { req }) => {
+      if (passwordConfirmation !== req.body.password) {
+        throw new Error("Passwords must match");
+      }
+    })
+  )
 ], async (req, res) => {
   const errors = validationResult(req);
   console.log(errors);
+
   const { email, password, passwordConfirmation } = req.body;
-
-  const existingUser = await usersRepo.getOneBy({ email });
-  if (existingUser) {
-    return res.send('Email in use');
-  }
-  if (password !== passwordConfirmation) {
-    return res.send("Password must match");
-  }
-
   // create a user in our repo to represent this person
   const user = await usersRepo.create({ email, password });
   // Store the id of that user inside the users cookie
