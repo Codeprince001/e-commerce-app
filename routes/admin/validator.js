@@ -1,6 +1,15 @@
 const { check } = require('express-validator');
 const usersRepo = require('../../repositories/users');
+
+
 const validator = {
+  requireTitle: check('title')
+    .trim()
+    .isLength({ min: 5, max: 30 }),
+  requirePrice: check('price')
+    .trim()
+    .toFloat()
+    .isFloat({ min: 2 }),
   requireEmail: check('email')
     .trim()
     .normalizeEmail()
