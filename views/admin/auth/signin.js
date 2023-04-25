@@ -1,34 +1,32 @@
-const layoutAdmin = require('../layout');
+const layout = require('../layout');
+const { getError } = require('../../helpers');
 
-const getError = (errors, prop) => {
-  try {
-    return errors.mapped()[prop].msg;
-  } catch (err) {
-    return '';
-  }
-};
-
-const signinTemplate = ({ req, errors }) => {
-  return layoutAdmin({
+const signinTemplate = ({ errors }) => {
+  return layout({
     content: `
-  <!DOCTYPE html>
-  <html>
-  <head></head>
-  <body>
-    <div>
-      <form method="POST">
-        <labe for="email">Email</label>
-        <input name="email" id="email" placeholder="email" required/>
-        ${getError(errors, 'email')}
-        <label for="password">Password</label>
-        <input name="password" id="password" placeholder="password" required/>
-        ${getError(errors, 'password')}
-        <button type="submit">Sign In</button>
-      </form>
-    </div>
-  </body>
-  </html>
-  `});
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-one-quarter">
+            <form method="POST">
+              <h1 class="title">Sign in</h1>
+              <div class="field">
+                <label class="label">Email</label>
+                <input required class="input" placeholder="Email" name="email" />
+                <p class="help is-danger">${getError(errors, 'email')}</p>
+              </div>
+              <div class="field">
+                <label class="label">Password</label>
+                <input required class="input" placeholder="Password" name="password" type="password" />
+                <p class="help is-danger">${getError(errors, 'password')}</p>
+              </div>
+              <button class="button is-primary">Submit</button>
+            </form>
+            <a href="/signup">Need an account? Sign Up</a>
+          </div>
+        </div>
+      </div>
+    `
+  });
 };
 
 module.exports = signinTemplate;
