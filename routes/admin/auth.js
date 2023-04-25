@@ -24,7 +24,7 @@ router.post('/signup',
 
     const { email, password, passwordConfirmation } = req.body;
     // create a user in our repo to represent this person
-    const user = await usersRepo.create({ email, password });
+    const user = await usersRepo.create({ email, password, passwordConfirmation });
     // Store the id of that user inside the users cookie
     req.session.userId = user.id;
 
@@ -38,7 +38,7 @@ router.get('/signout', (req, res) => {
 });
 
 router.get('/signin', (req, res) => {
-  res.send(signinTemplate({ req }));
+  res.send(signinTemplate({}));
 });
 
 router.post('/signin',
@@ -48,8 +48,6 @@ router.post('/signin',
     if (!errors.isEmpty()) {
       return res.send(signinTemplate({ req, errors }));
     }
-
-    res.send("You are signed in");
 
     const { email } = req.body;
 
