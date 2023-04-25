@@ -24,7 +24,7 @@ router.post('/signup',
 
     const { email, password, passwordConfirmation } = req.body;
     // create a user in our repo to represent this person
-    const user = await usersRepo.create({ email, password, passwordConfirmation });
+    const user = await usersRepo.create({ email, password });
     // Store the id of that user inside the users cookie
     req.session.userId = user.id;
 
