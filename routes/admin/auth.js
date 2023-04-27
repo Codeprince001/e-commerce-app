@@ -1,5 +1,7 @@
 const express = require('express');
-const { check, validationResult } = require('express-validator');
+
+
+const { errorHandler } = require('./middlewares');
 const usersRepo = require('../../repositories/users');
 const signupTemplate = require('../../views/admin/auth/signup');
 const signinTemplate = require('../../views/admin/auth/signin');
@@ -14,21 +16,15 @@ router.get('/signup', (req, res) => {
 
 router.post('/signup',
   [requireEmail, requirePassword, requireConfirmPassword],
+  errorHandler(signupTemplate),
   async (req, res) => {
-    const errors = validationResult(req);
-    console.log(errors);
-    // errors : [{value: 'password', msg: ''password invalid, param: 'password', location: 'body'}] 
-    if (!errors.isEmpty()) {
-      return res.send(signupTemplate({ req, errors }));
-    }
-
-    const { email, password, passwordConfirmation } = req.body;
+    const { email, password } = req.body;
     // create a user in our repo to represent this person
     const user = await usersRepo.create({ email, password });
     // Store the id of that user inside the users cookie
     req.session.userId = user.id;
 
-    res.send("Account Created");
+    res.redirect('/admin/products');
   });
 
 router.get('/signout', (req, res) => {
@@ -42,19 +38,16 @@ router.get('/signin', (req, res) => {
 });
 
 router.post('/signin',
-  [requireExactEmail, requireExactPassword], async (req, res) => {
-    const errors = validationResult(req);
-    console.log(errors);
-    if (!errors.isEmpty()) {
-      return res.send(signinTemplate({ req, errors }));
-    }
+  [requireExactEmail, requireExactPassword],
+  errorHandler(signinTemplate),
+  async (req, res) => {
 
     const { email } = req.body;
 
     const user = await usersRepo.getOneBy({ email });
     req.session.userId = user.id;
 
-    res.send('You are signed in!!!!');
+    res.redirect('/admin/products');
   });
 
 module.exports = router;
