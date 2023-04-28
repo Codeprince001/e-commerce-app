@@ -16,7 +16,12 @@ const upload = multer({ storage: multer.memoryStorage() });
 router.get('/admin/products', requireAuth, async (req, res) => {
   const products = await productRepo.getAll();
   res.send(productIndexTemplate({ products }));
+});
 
+router.post('/admin/products/:id/delete', requireAuth, async (req, res) => {
+  await productRepo.delete(req.params.id);
+
+  res.redirect('/admin/products');
 });
 
 router.get('/admin/products/new', requireAuth, (req, res) => {
