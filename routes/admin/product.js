@@ -18,12 +18,6 @@ router.get('/admin/products', requireAuth, async (req, res) => {
   res.send(productIndexTemplate({ products }));
 });
 
-router.post('/admin/products/:id/delete', requireAuth, async (req, res) => {
-  await productRepo.delete(req.params.id);
-
-  res.redirect('/admin/products');
-});
-
 router.get('/admin/products/new', requireAuth, (req, res) => {
   res.send(newProductTemplate({}));
 });
@@ -43,7 +37,7 @@ router.post('/admin/products/new', requireAuth,
   });
 
 router.get('/admin/products/:id/edit', requireAuth, async (req, res) => {
-  product = await productRepo.getOne(req.params.id);
+  const product = await productRepo.getOne(req.params.id);
   if (!product) {
     return res.send("Product not found");
   }
@@ -56,7 +50,6 @@ router.post('/admin/products/:id/edit',
   requireAuth,
   upload.single('image'),
   [requireTitle, requirePrice],
-
   errorHandler(editProductTemplate, async (req) => {
     const product = await productRepo.getOne(req.params.id);
     return { product };
@@ -75,5 +68,12 @@ router.post('/admin/products/:id/edit',
     res.redirect('/admin/products');
 
   });
+
+router.post('/admin/products/:id/delete', async (req, res) => {
+  await productRepo.delete(req.params.id);
+
+  res.redirect('/admin/products');
+});
+
 
 module.exports = router;
