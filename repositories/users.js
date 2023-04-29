@@ -18,7 +18,7 @@ class UsersRepository extends Repository {
     const records = await this.getAll();
     records.push(record);
 
-    this.writeAll(records);
+    await this.writeAll(records);
 
     return record;
   }
