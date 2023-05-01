@@ -2,7 +2,6 @@ const express = require('express');
 const cartsRepo = require('../../repositories/carts');
 const productsRepo = require('../../repositories/products');
 const cartShowTemplate = require('../../views/client/cart/show');
-const notification = require('../../views/client/notification');
 
 const router = express.Router();
 
@@ -29,8 +28,7 @@ router.post('/cart/products', async (req, res) => {
     cart.items.push({ id: req.body.productId, quantity: 1 });
   }
   await cartsRepo.update(cart.id, { items: cart.items });
-  res.send();
-  res.redirect('/');
+  res.redirect('/cart');
 });
 
 router.get('/cart', async (req, res) => {
