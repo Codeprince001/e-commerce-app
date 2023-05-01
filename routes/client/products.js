@@ -1,6 +1,5 @@
 const express = require('express');
 
-
 const productsRepo = require('../../repositories/products');
 const productsIndexTemplate = require('../../views/client/index');
 
